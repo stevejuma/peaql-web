@@ -34,8 +34,8 @@
   import demoSQL from "./lib/demo.sql?raw";
   import { Toggle } from "$lib/components/ui/toggle/index.js";
   import { DateTime } from "luxon";
-    import { DEFAULT_DB, DEFAULT_QUERY } from "./dataset";
-
+  import { DEFAULT_DB, DEFAULT_QUERY } from "./dataset";
+  import "../node_modules/github-fork-ribbon-css/gh-fork-ribbon.css";
 
   type Response = [Array<{ name: symbol; type: DType }>, Array<Array<unknown>>];
   type QueryResponse = {
@@ -203,7 +203,7 @@
     }
   })
 </script>
-
+<a class="github-fork-ribbon" href="https://github.com/stevejuma/peaql" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
 <Sidebar.Provider style={`--sidebar-width: 300px;`}>
   <AppSidebar
     {showHistory}
@@ -250,13 +250,13 @@
       </div>
     </div>
     <Resizable.PaneGroup direction="vertical" class="h-full min-h-svh">
-      <Resizable.Pane defaultSize={55}>
+      <Resizable.Pane defaultSize={45}>
         <ScrollArea orientation="both" class="h-full">
           <SqlEditor bind:content={query.value} {onDocChange} />
         </ScrollArea>
       </Resizable.Pane>
-      <Resizable.Handle />
-      <Resizable.Pane defaultSize={45} class="p-2">
+      <Resizable.Handle withHandle />
+      <Resizable.Pane defaultSize={55} class="p-2">
         <Tabs.Root bind:value={selectedTab} class="h-full w-full">
           <Tabs.List>
             <Tabs.Trigger value="output">Data Output</Tabs.Trigger>

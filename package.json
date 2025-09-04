@@ -45,6 +45,7 @@
     "@lezer/lr": "^1.4.2",
     "@tanstack/virtual-core": "^3.13.12",
     "codemirror": "^6.0.2",
+    "github-fork-ribbon-css": "^0.2.3",
     "idb-keyval": "^6.2.2",
     "luxon": "^3.7.1",
     "peaql": "^0.1.14",
