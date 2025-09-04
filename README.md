@@ -1,47 +1,123 @@
-# Svelte + TS + Vite
+# PeaQL Web
 
-This template should help get you started developing with Svelte and TypeScript in Vite.
+A web-based SQL query interface built with Svelte, TypeScript, and the PeaQL database library. Execute SQL queries directly in your browser with syntax highlighting, data visualization, and persistent storage.
 
-## Recommended IDE Setup
+## Features
 
-[VS Code](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
+- 🔍 **SQL Editor** - CodeMirror-powered editor with SQL syntax highlighting and autocomplete
+- 📊 **Data Visualization** - Interactive data tables with sorting, filtering, and pagination
+- 💾 **Persistent Storage** - Queries and database state saved locally using IndexedDB
+- 🎨 **Modern UI** - Clean, responsive interface built with Tailwind CSS and shadcn/ui components
+- ⚡ **In-Browser Database** - Powered by PeaQL for client-side SQL execution
+- 📱 **Responsive Design** - Works seamlessly on desktop and mobile devices
+- 🗂️ **Tabbed Interface** - Multiple query tabs for efficient workflow
 
-## Need an official Svelte framework?
+## Demo Data
 
-Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
+The application includes a comprehensive demo database with sample data including:
+- Music catalog (albums, artists, tracks)
+- Customer data and invoices
+- Employee records
+- Playlist management
 
-## Technical considerations
+Perfect for learning SQL or testing queries without setting up a separate database.
 
-**Why use this over SvelteKit?**
+## Getting Started
 
-- It brings its own routing solution which might not be preferable for some users.
-- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+### Prerequisites
 
-This template contains as little as possible to get started with Vite + TypeScript + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
+- Node.js (v18 or higher)
+- npm or yarn package manager
 
-Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
+### Installation
 
-**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
-
-Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
-
-**Why include `.vscode/extensions.json`?**
-
-Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
-
-**Why enable `allowJs` in the TS template?**
-
-While `allowJs: false` would indeed prevent the use of `.js` files in the project, it does not prevent the use of JavaScript syntax in `.svelte` files. In addition, it would force `checkJs: false`, bringing the worst of both worlds: not being able to guarantee the entire codebase is TypeScript, and also having worse typechecking for the existing JavaScript. In addition, there are valid use cases in which a mixed codebase may be relevant.
-
-**Why is HMR not preserving my local component state?**
-
-HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
-
-If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
-
-```ts
-// store.ts
-// An extremely simple external store
-import { writable } from "svelte/store";
-export default writable(0);
+1. Clone the repository:
+```bash
+git clone https://github.com/stevejuma/peaql-web.git
+cd peaql-web
 ```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
+npm run dev
+```
+
+4. Open your browser and navigate to `http://localhost:5173`
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+The built files will be in the `dist` directory.
+
+## Usage
+
+1. **Writing Queries**: Use the SQL editor to write your queries with full syntax highlighting
+2. **Executing Queries**: Click the play button or use `Ctrl+Enter` to execute queries
+3. **Viewing Results**: Query results are displayed in an interactive data table below the editor
+4. **Managing Tabs**: Create multiple query tabs for different workspaces
+5. **Data Persistence**: Your queries and database state are automatically saved locally
+
+## Tech Stack
+
+- **Frontend Framework**: Svelte 5 with TypeScript
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS 4.0
+- **UI Components**: shadcn/ui components adapted for Svelte
+- **Code Editor**: CodeMirror 6
+- **Database**: PeaQL (client-side SQL database)
+- **Data Tables**: TanStack Table
+- **Storage**: IndexedDB via idb-keyval
+
+## Project Structure
+
+```
+src/
+├── lib/
+│   ├── components/          # Reusable UI components
+│   │   ├── ui/             # shadcn/ui component library
+│   │   ├── data-table/     # Data visualization components
+│   │   ├── sql-editor.svelte
+│   │   └── app-sidebar.svelte
+│   ├── hooks/              # Svelte runes and utilities
+│   ├── demo.sql            # Sample database schema and data
+│   └── utils.ts            # Utility functions
+├── App.svelte              # Main application component
+└── main.ts                 # Application entry point
+```
+
+## Development
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run fmt` - Format code with Prettier
+- `npm run check` - Type check with Svelte and TypeScript
+
+### Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## Acknowledgments
+
+- [PeaQL](https://github.com/stevejuma/peaql) - The client-side SQL database engine
+- [CodeMirror](https://codemirror.net/) - The excellent code editor
+- [shadcn svelte](https://www.shadcn-svelte.com/) - Beautiful UI components
+- [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework

@@ -21,7 +21,7 @@
     type DType,
   } from "peaql";
   import QueryResults from "$lib/components/data-table/query-results.svelte";
-  import { onMount } from "svelte";
+  import { onMount, untrack } from "svelte";
   import * as Tabs from "$lib/components/ui/tabs/index.js";
   import * as Alert from "$lib/components/ui/alert/index.js";
   import AlertCircleIcon from "@lucide/svelte/icons/alert-circle";
@@ -34,72 +34,8 @@
   import demoSQL from "./lib/demo.sql?raw";
   import { Toggle } from "$lib/components/ui/toggle/index.js";
   import { DateTime } from "luxon";
+    import { DEFAULT_DB, DEFAULT_QUERY } from "./dataset";
 
-  const DEFAULT_DB = {
-    peaql: {
-      data: {
-        name: "peaql",
-        columns: [
-          {
-            name: "album_id",
-            type: "integer",
-          },
-          {
-            name: "title",
-            type: "string",
-          },
-          {
-            name: "artist_id",
-            type: "integer",
-          },
-        ],
-        constraints: [
-          {
-            column: "album_id",
-            expr: "album_id IS NOT NULL",
-            name: "not-null",
-          },
-          {
-            column: "title",
-            expr: "title IS NOT NULL",
-            name: "not-null",
-          },
-          {
-            column: "artist_id",
-            expr: "artist_id IS NOT NULL",
-            name: "not-null",
-          },
-          {
-            column: "artist_id",
-            expr: "artist_id > 0",
-            name: "album_artist_id_check",
-          },
-          {
-            column: undefined,
-            expr: "length(title) > 0",
-            name: "name_not_empty",
-          },
-          {
-            column: undefined,
-            expr: "artist_id < 10",
-            name: "album_artist_id_check",
-          },
-        ],
-        data: [
-          {
-            album_id: 1,
-            artist_id: 1,
-            title: "For Those About To Rock We Salute You",
-          },
-          {
-            album_id: 2,
-            artist_id: 2,
-            title: "Balls to the Wall",
-          },
-        ],
-      },
-    },
-  };
 
   type Response = [Array<{ name: symbol; type: DType }>, Array<Array<unknown>>];
   type QueryResponse = {
@@ -112,7 +48,7 @@
 
   let showHistory: boolean = $state(false);
 
-  let datasource: any = useIdbStorage("datasource", DEFAULT_DB);
+  let datasource: any = useIdbStorage("datasource", {});
 
   let db = $derived.by(() => {
     try {
@@ -124,7 +60,7 @@
 
   let selectedTab: "output" | "messages" = $state("output");
 
-  let query = useLocalStorage("query", "select * from peaql");
+  let query = useLocalStorage("query", "");
   let queryHistory = useLocalStorage<
     Array<{
       query: string;
@@ -154,9 +90,7 @@
 
   function clearDatabase() {
     clear();
-    datasource.value = DEFAULT_DB;
-    query.value = "SELECT * FROM peaql";
-    executeQuery(query.value);
+    query.value = "";
   }
 
   function updateHistory(results: QueryResponse) {
@@ -257,32 +191,17 @@
   function resetDatabase() {
     clear().then(() => {
       executeQuery(demoSQL);
-      query.value = `select
-  playlist.name,
-  count(artist.artist_id)
-from
-  playlist
-  join playlist_track pt on pt.playlist_id = playlist.playlist_id
-  join track on track.track_id = pt.track_id
-  join album on album.album_id = track.album_id
-  join artist on artist.artist_id = album.artist_id
-group by
-  1
-order by
-  2 desc`;
+      query.value = DEFAULT_QUERY;
     });
   }
 
-  onMount(() => {
-    setTimeout(() => {
-      if (datasource.loaded == 1) {
+  $effect(() => {
+    if (datasource.loaded === 1) {
+      setTimeout(() => {
         response = executeQuery(query.value);
-      } else {
-        response = executeQuery("SELECT * from peaql");
-      }
-    });
-  });
-
+      });
+    }
+  })
 </script>
 
 <Sidebar.Provider style={`--sidebar-width: 300px;`}>
@@ -314,8 +233,8 @@ order by
           <Menubar.Menu>
             <Menubar.Trigger>DB</Menubar.Trigger>
             <Menubar.Content>
-              <Menubar.Item onclick={() => clearDatabase()}>Clear</Menubar.Item>
-              <Menubar.Item onclick={() => resetDatabase()}>Reset</Menubar.Item>
+              <Menubar.Item onclick={() => clearDatabase()}>Drop Database</Menubar.Item>
+              <Menubar.Item onclick={() => resetDatabase()}>Reset Database</Menubar.Item>
               <Menubar.Item onclick={() => (query.value = demoSQL)}
                 >Demo SQL</Menubar.Item
               >
