@@ -101,10 +101,11 @@
     },
   };
 
+  type Response = [Array<{ name: symbol; type: DType }>, Array<Array<unknown>>];
   type QueryResponse = {
     query: string;
     error?: any;
-    results: [Array<{ name: symbol; type: DType }>, Array<Array<unknown>>];
+    results: Response;
     runtime: number;
     rows: number;
   };
@@ -115,7 +116,7 @@
 
   let db = $derived.by(() => {
     try {
-      return createDatabase(datasource.value);
+      return createDatabase($state.snapshot(datasource.value));
     } catch (e) {
       return createDatabase(DEFAULT_DB);
     }
@@ -182,7 +183,8 @@
     const startTime = performance.now();
     try {
       const statement = db.prepare(query);
-      const results = db.execute(statement);
+      const response = db.execute(statement);
+      const results: Response = Array.isArray(response) ?  response as Response : [[{name: "-", type: Object}], [[response]]];
       selectedTab = "output";
       if (isDDL(statement.expr)) {
         saveDb();
@@ -280,9 +282,10 @@ order by
       }
     });
   });
+
 </script>
 
-<Sidebar.Provider style="--sidebar-width: 300px;">
+<Sidebar.Provider style={`--sidebar-width: 300px;`}>
   <AppSidebar
     {showHistory}
     bind:queryHistory={queryHistory.value}
@@ -340,10 +343,8 @@ order by
             <Tabs.Trigger value="output">Data Output</Tabs.Trigger>
             <Tabs.Trigger value="messages">Messages</Tabs.Trigger>
           </Tabs.List>
-          <Tabs.Content value="output" class="h-full">
-            <ScrollArea class="h-[calc(100%_-_6rem)]">
+          <Tabs.Content value="output" class="h-full w-full"> 
               <QueryResults results={response.results} />
-            </ScrollArea>
           </Tabs.Content>
           <Tabs.Content value="messages" class="h-full">
             {#if response.error}

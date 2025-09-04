@@ -168,3 +168,7 @@
   min-width: 25px;
   white-space: nowrap;
 }
+
+div[data-slot=sidebar-wrapper]:has(>div[data-slot=sidebar][data-state=expanded]) > main {
+  width: calc(100% - var(--sidebar-width));
+}
