@@ -8,6 +8,7 @@
   import { Decimal } from "peaql";
   import { createVirtualizer } from "$lib/hooks/virtual.svelte";
   import ScrollArea from "$lib/components/ui/scroll-area/scroll-area.svelte";
+    import { DateTime } from "luxon";
 
   type DataTableProps<TData, TValue> = {
     columns: ColumnDef<TData, TValue>[];
@@ -87,7 +88,11 @@
             {#each row.getVisibleCells() as cell (cell.id)}
               <Table.Cell>
                 {@const value = cell.getValue()}
-                <span>{value}</span>
+                {#if value instanceof DateTime}
+                   <input class="font-mono" type="datetime-local" disabled  value={value.toISO()?.substring(0, 16)} />
+                {:else}
+                   <span>{value}</span>
+                {/if}
               </Table.Cell>
             {/each}
           </Table.Row>
