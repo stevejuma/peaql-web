@@ -5,6 +5,7 @@ import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/peaql-web",
   plugins: [tailwindcss(), svelte()],
   assetsInclude: ["**/*.sql"],
   server: {
